@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import Card from "./components/Card";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  const [burgers, setBurgers] = useState(null);
+
+  const fetchData = async () => {
+    const burgerData = await axios.get("http://localhost:8000/burgers");
+    const data = Object.keys(burgerData.data.data).map(
+      (burgerId) => burgerData.data.data[burgerId]
+    ); //objeyi arraya çevirdik
+    setBurgers(data);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  console.log(burgers);
+  return <div className="App">
+    <h1>My Favourite Burgers</h1>
+    <div className="burger-feed">
+      {burgers?.map(burger => <Card key={burger.id} burger={burger}/>)}
     </div>
-  );
+  </div>;
 }
 
 export default App;
